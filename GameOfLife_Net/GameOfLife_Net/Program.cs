@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace GameOfLife_Net
 {
@@ -10,35 +11,35 @@ namespace GameOfLife_Net
         {
             if(args.Length != 1)
                 throw new ArgumentException("Invalid argument usage");
+            
+            GameField gameField = new GameField();
+            gameField.ReadFieldFromFile(args[0]);
 
-            int[,] currentStepArray;
-            int[,] nextStepArray;
+            var field = gameField.InitializedField();
 
-            int rowCount;
-            int colCount;
-
-            using (StreamReader reader = new StreamReader(args[0]))
+            for (int i = 0; i < field.GetLength(0); i++)
             {
-                var buffer = reader.ReadToEnd();
-                var rows = buffer.Split('\n').Select(x => x.Split(' ')).ToList();
-
-                rowCount = rows.Count;
-                colCount = rows[0].Length;
-
-                currentStepArray = new int[rowCount, colCount];
-                nextStepArray = new int[rowCount, colCount];
-
-                for (int i = 0; i < rowCount; i++)
+                for (int j = 0; j < field.GetLength(1); j++)
                 {
-                    for (int j = 0; j < colCount; j++)
+                    Console.Write(field[i,j]);
+                }
+                Console.WriteLine();
+            }
+
+            while (true)
+            {
+                Thread.Sleep(500);
+                Console.Clear();
+                field = gameField.PlayOneStep();
+                for (int i = 0; i < field.GetLength(0); i++)
+                {
+                    for (int j = 0; j < field.GetLength(1); j++)
                     {
-                        currentStepArray[i, j] = Int32.Parse(rows[i][j]);
-                        nextStepArray[i, j] = currentStepArray[i, j];
+                        Console.Write(field[i, j]);
                     }
+                    Console.WriteLine();
                 }
             }
-            
-
         }
     }
 }
