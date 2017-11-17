@@ -28,7 +28,7 @@ namespace GameOfLife_Net
 
             while (true)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(300);
                 Console.Clear();
                 field = gameField.PlayOneStep();
                 for (int i = 0; i < field.GetLength(0); i++)

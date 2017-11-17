@@ -65,9 +65,9 @@ namespace GameOfLife_Net
 
         private void NextState()
         {
-            for (int i = 1; i < rowCount - 1; i++)
+            for (int i = 0; i < rowCount; i++)
             {
-                for (int j = 1; j < colCount - 1; j++)
+                for (int j = 0; j < colCount; j++)
                 {
                     var countOfNeighbors = CountOfNeighbor(GetNeighbors(i, j));
 
@@ -84,27 +84,38 @@ namespace GameOfLife_Net
                         if (countOfNeighbors == 3)
                             _nextStepArray[i, j] = 1;
                     }
-
-                    _currentStepArray[i, j] = _nextStepArray[i, j];
                 }
             }
 
+            for (int i = 0; i < rowCount; i++)
+            {
+                for (int j = 0; j < colCount; j++)
+                {
+                    _currentStepArray[i, j] = _nextStepArray[i, j];
+                }
+            }
         }
 
-        // TODO: need to implement game field like a tours
-        private int[] GetNeighbors(int i, int j) =>
-            new[]
-            {
-                _currentStepArray[i - 1, j - 1],
-                _currentStepArray[i - 1, j],
-                _currentStepArray[i - 1, j + 1],
-                _currentStepArray[i, j - 1],
-                _currentStepArray[i, j + 1],
-                _currentStepArray[i + 1, j - 1],
-                _currentStepArray[i + 1, j],
-                _currentStepArray[i + 1, j + 1]
-            };
+        private int[] GetNeighbors(int i, int j)
+        {
+            int top = (i == 0) ? rowCount - 1 : i - 1;
+            int bottom = (i == rowCount - 1) ? 0 : i + 1;
+            int left = (j == 0) ? colCount - 1 : j - 1;
+            int rigth = (j == colCount - 1) ? 0 : j + 1;
 
+            return new[]
+            {
+                _currentStepArray[top, left],
+                _currentStepArray[top, j],
+                _currentStepArray[top, rigth],
+                _currentStepArray[i, left],
+                _currentStepArray[i, rigth],
+                _currentStepArray[bottom, left],
+                _currentStepArray[bottom, j],
+                _currentStepArray[bottom, rigth]
+            };
+        }
+        
         private int CountOfNeighbor(int[] neighbors) => neighbors.Count(x => x == 1);
     }
 }
